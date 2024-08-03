@@ -1,14 +1,18 @@
 const express = require('express');
 const path = require('path');
-const routes = require('./routes/htmlRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-app.use(express.static('../client/dist'));
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
+// Serve static files from the client/dist directory
+app.use(express.static(path.join(__dirname, '../client/dist')));
 
-require('./routes/htmlRoutes')(app);
+// Serve the index.html file for any unknown routes (this is a catch-all route)
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../client/dist/index.html'));
+});
 
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
 app.listen(PORT, () => console.log(`Now listening on port: ${PORT}`));
